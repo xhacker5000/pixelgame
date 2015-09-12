@@ -1,16 +1,50 @@
 /**
  *
  * @author wheatup
- * 测试游戏场景
+ * 开场游戏场景
  *
  */
 class ScenarioIntro extends Scenario{
     private tick: number = 0;
     
+    private grp_touch: egret.gui.Group;
+    
 	public constructor() {
         super("skins.scenario.ScenarioIntroSkin");
-        this.terrain = new Terrain(this, "73,239 26,392 207,468 363,389 325,294 427,181 590,256 456,389 483,453 759,449 729,152 496,22 205,124 205,354 144,260");
+        this.terrain = new Terrain(this, "");
 	}
+	
+	public init():void{
+        (<egret.gui.Group>this.ui["grp_game"]).touchChildren = false;
+        this.grp_touch = this.ui["grp_touch"];
+        this.bindEvents();
+	}
+	
+    private bindEvents():void{
+        this.grp_touch.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch, this);
+        WheatupEvent.bind(EventType.DIALOGUE_END, this.onDialogueEnd, this);
+    }
+        
+    private unbindEvents():void{
+        this.grp_touch.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch, this);
+        WheatupEvent.unbind(EventType.DIALOGUE_END, this.onDialogueEnd);
+    }
+    
+    private onDialogueEnd(data: any): void{
+        if(data == "intro"){
+            Timer.addTimer(1000, 1, () => {
+                egret.Tween.get(this.ui["img_car"]).to({ x: 900 }, 4000, egret.Ease.quadIn);
+                Timer.addTimer(4000, 1, this.nextScene, this);
+            }, this);
+        }
+    }
+    
+    public nextScene():void{
+        Main.TRANSTION_TIME = 2000;
+        Main.removeScene(this);
+        Main.addScene(Main.LAYER_GAME, new ScenarioRoad());
+        Main.transit();
+    }
 	
 	public start(): void{
         //this.drawGrid();
@@ -33,7 +67,7 @@ class ScenarioIntro extends Scenario{
         
         //出现对话
         this.addEvent(() => {
-            DialogueScene.setDialogue("江蛤蛤", "真没想到这件事就这么结束了。");
+            DialogueScene.getDialogue("intro");
         }, this);
 	}
 	
@@ -52,4 +86,14 @@ class ScenarioIntro extends Scenario{
             this.nextBumpTick += Math.round(Math.random() * 20 + 10);
         }
 	}
+	
+    private touch(event: egret.TouchEvent):void{
+        if(DialogueScene.showing){
+            DialogueScene.interupt();
+        }
+    }
+    
+    public onRemove(): void{
+        this.unbindEvents();
+    }
 }

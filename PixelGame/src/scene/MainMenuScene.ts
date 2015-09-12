@@ -135,6 +135,8 @@ class MainMenuScene extends Scene{
         Main.removeScene(this);            
         Main.addScene(Main.LAYER_GAME, new ScenarioIntro());
 
+        Main.transit();
+
 	}
 	
 	//移除事件，移除跟本页面相关的所有监听

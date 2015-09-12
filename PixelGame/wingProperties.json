@@ -121,6 +121,21 @@
 				"isFolder":false,
 				"key":"ui_arrow_down",
 				"name":"ui_arrow_down"
+			},
+			{
+				"isFolder":false,
+				"key":"blank",
+				"name":"blank"
+			},
+			{
+				"isFolder":false,
+				"key":"char_temp",
+				"name":"char_temp"
+			},
+			{
+				"isFolder":false,
+				"key":"scene1_bg_2a",
+				"name":"scene1_bg_2a"
 			}]
 		}
 	},

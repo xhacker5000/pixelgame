@@ -7,10 +7,13 @@
 class DialogueScene extends Scene{
     private normalPosY: number = 280;
     private grp: egret.gui.Group;
-    private showing: boolean = false;
+    public static showing: boolean = false;
     private tickingText: boolean = false;
     private showTime: number = 500;
     private tickSpeed: number = 50;
+    
+    private static currentKey: string = "";
+    private static hasNext: boolean = false;
     
     private static instance: DialogueScene;
     
@@ -20,6 +23,8 @@ class DialogueScene extends Scene{
     }
     
     public init():void{
+        this.touchChildren = false;
+        this.touchEnabled = false;
         this.grp = this.ui["grp"];
         this.grp.visible = false;
         this.grp.y = this.normalPosY + this.height;
@@ -71,17 +76,24 @@ class DialogueScene extends Scene{
         }
     }
     
+    //点击后的反应
     private rush():void{
         if(this.tickingText){
             Timer.removeTimer(this.tickingTimerVO);
             this.tickingTimerVO = null;
             this.ui["lbl_text"].text = this.currentText;
+            this.tickingText = false;
             DialogueScene.instance.showArrow();
+        }else if(DialogueScene.hasNext){
+            DialogueScene.getDialogue(DialogueScene.currentKey);
+        }else{
+            DialogueScene.hideDialogue();
+            WheatupEvent.call(EventType.DIALOGUE_END, DialogueScene.currentKey);
         }
     }
     
     //显示对话
-    public static setDialogue(name: string, text: string):void{
+    private static setDialogue(name: string, text: string):void{
         var time: number = 100;
         DialogueScene.instance.hideArrow();
         DialogueScene.instance.grp.visible = true;
@@ -96,11 +108,11 @@ class DialogueScene extends Scene{
         
         DialogueScene.instance.ui["lbl_text"].text = "";
         
-        if(!DialogueScene.instance.showing){
+        if(!DialogueScene.showing){
             DialogueScene.instance.show();
             time = DialogueScene.instance.showTime;
         }
-        DialogueScene.instance.showing = true;
+        DialogueScene.showing = true;
         Timer.addTimer(time, 1, DialogueScene.instance.showText, DialogueScene.instance, text);
     }
     
@@ -110,7 +122,16 @@ class DialogueScene extends Scene{
     }
     
     //隐藏对话框
-    public static hideDialogue():void{
+    private static hideDialogue():void{
         DialogueScene.instance.hide();
+        DialogueScene.showing = false;
+    }
+    
+    //获取对话并显示
+    public static getDialogue(key: string): void{
+        DialogueScene.currentKey = key;
+        var dias: DialogueVO = Dialogue.getDialogue(key);
+        DialogueScene.setDialogue(dias.name, dias.text);
+        DialogueScene.hasNext = dias.stream;
     }
 }
