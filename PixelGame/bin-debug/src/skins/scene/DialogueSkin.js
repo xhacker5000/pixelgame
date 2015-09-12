@@ -66,4 +66,3 @@ var skins;
         DialogueSkin.prototype.__class__ = "skins.scene.DialogueSkin";
     })(scene = skins.scene || (skins.scene = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=DialogueSkin.js.map

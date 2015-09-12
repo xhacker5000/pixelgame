@@ -98,4 +98,3 @@ var DialogueScene = (function (_super) {
     return DialogueScene;
 })(Scene);
 DialogueScene.prototype.__class__ = "DialogueScene";
-//# sourceMappingURL=DialogueScene.js.map

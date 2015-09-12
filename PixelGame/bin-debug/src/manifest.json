@@ -23,5 +23,6 @@
 	"Main.ts",
 	"skins/scene/BGSkin.exml",
 	"skins/scene/MainMenuSkin.exml",
-	"skins/scene/WarningSkin.exml"
+	"skins/scene/WarningSkin.exml",
+	"util/ConversationManager.ts"
 ]

@@ -25,4 +25,3 @@ var NodePoint = (function () {
     return NodePoint;
 })();
 NodePoint.prototype.__class__ = "NodePoint";
-//# sourceMappingURL=NodePoint.js.map

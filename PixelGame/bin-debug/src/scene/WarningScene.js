@@ -85,4 +85,3 @@ var WarningScene = (function (_super) {
     return WarningScene;
 })(Scene);
 WarningScene.prototype.__class__ = "WarningScene";
-//# sourceMappingURL=WarningScene.js.map

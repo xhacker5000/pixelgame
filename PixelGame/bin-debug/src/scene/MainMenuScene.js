@@ -12,6 +12,8 @@ var MainMenuScene = (function (_super) {
         this.offsetX = 0;
         this.offsetY = 0;
         MainMenuScene.instance = this;
+        new ConversationManager();
+        ConversationManager.Init();
     }
     var __egretProto__ = MainMenuScene.prototype;
     //初始化
@@ -127,4 +129,3 @@ var MainMenuScene = (function (_super) {
     return MainMenuScene;
 })(Scene);
 MainMenuScene.prototype.__class__ = "MainMenuScene";
-//# sourceMappingURL=MainMenuScene.js.map

@@ -43,4 +43,3 @@ var Point = (function () {
     return Point;
 })();
 Point.prototype.__class__ = "Point";
-//# sourceMappingURL=Polygon.js.map

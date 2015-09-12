@@ -44,4 +44,3 @@ var Scenario = (function (_super) {
     return Scenario;
 })(Scene);
 Scenario.prototype.__class__ = "Scenario";
-//# sourceMappingURL=Scenario.js.map

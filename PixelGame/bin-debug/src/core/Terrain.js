@@ -25,4 +25,3 @@ var Terrain = (function () {
     return Terrain;
 })();
 Terrain.prototype.__class__ = "Terrain";
-//# sourceMappingURL=Terrain.js.map

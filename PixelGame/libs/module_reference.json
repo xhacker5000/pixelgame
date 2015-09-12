@@ -1660,8 +1660,8 @@
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/extension/gui/core/IVisualElement.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/extension/gui/events/PopUpEvent.ts"
 		],
-		"D:/DemoProject/pixelgame/libsrc/particle/Particle.ts": [],
-		"D:/DemoProject/pixelgame/libsrc/particle/ParticleSystem.ts": [
+		"J:/Project/pixelgame/libsrc/particle/Particle.ts": [],
+		"J:/Project/pixelgame/libsrc/particle/ParticleSystem.ts": [
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/display/DisplayObject.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/display/Texture.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/context/Ticker.ts",
@@ -1670,17 +1670,17 @@
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/context/renderer/RendererContext.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/context/renderer/RenderFilter.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/display/BlendMode.ts",
-			"D:/DemoProject/pixelgame/libsrc/particle/Particle.ts"
+			"J:/Project/pixelgame/libsrc/particle/Particle.ts"
 		],
-		"D:/DemoProject/pixelgame/libsrc/particle/GravityParticle.ts": [
-			"D:/DemoProject/pixelgame/libsrc/particle/Particle.ts"
+		"J:/Project/pixelgame/libsrc/particle/GravityParticle.ts": [
+			"J:/Project/pixelgame/libsrc/particle/Particle.ts"
 		],
-		"D:/DemoProject/pixelgame/libsrc/particle/GravityParticleSystem.ts": [
+		"J:/Project/pixelgame/libsrc/particle/GravityParticleSystem.ts": [
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/egret/display/Texture.ts",
 			"D:/Program Files/Egret/EgretEngine/win/egret/src/jslib/NumberUtils.ts",
-			"D:/DemoProject/pixelgame/libsrc/particle/ParticleSystem.ts",
-			"D:/DemoProject/pixelgame/libsrc/particle/GravityParticle.ts",
-			"D:/DemoProject/pixelgame/libsrc/particle/Particle.ts"
+			"J:/Project/pixelgame/libsrc/particle/ParticleSystem.ts",
+			"J:/Project/pixelgame/libsrc/particle/GravityParticle.ts",
+			"J:/Project/pixelgame/libsrc/particle/Particle.ts"
 		]
 	},
 	"classNameToPath": {
@@ -2104,9 +2104,9 @@
 		"egret.gui.PopUpManagerImpl": "D:/Program Files/Egret/EgretEngine/win/egret/src/extension/gui/managers/impl/PopUpManagerImpl.ts",
 		"egret.gui.PopUpData": "D:/Program Files/Egret/EgretEngine/win/egret/src/extension/gui/managers/impl/PopUpManagerImpl.ts",
 		"egret.gui.PopUpManager": "D:/Program Files/Egret/EgretEngine/win/egret/src/extension/gui/managers/PopUpManager.ts",
-		"particle.Particle": "D:/DemoProject/pixelgame/libsrc/particle/Particle.ts",
-		"particle.ParticleSystem": "D:/DemoProject/pixelgame/libsrc/particle/ParticleSystem.ts",
-		"particle.GravityParticle": "D:/DemoProject/pixelgame/libsrc/particle/GravityParticle.ts",
-		"particle.GravityParticleSystem": "D:/DemoProject/pixelgame/libsrc/particle/GravityParticleSystem.ts"
+		"particle.Particle": "J:/Project/pixelgame/libsrc/particle/Particle.ts",
+		"particle.ParticleSystem": "J:/Project/pixelgame/libsrc/particle/ParticleSystem.ts",
+		"particle.GravityParticle": "J:/Project/pixelgame/libsrc/particle/GravityParticle.ts",
+		"particle.GravityParticleSystem": "J:/Project/pixelgame/libsrc/particle/GravityParticleSystem.ts"
 	}
 }

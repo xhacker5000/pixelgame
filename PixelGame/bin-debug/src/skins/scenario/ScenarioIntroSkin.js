@@ -118,4 +118,3 @@ var skins;
         ScenarioIntroSkin.prototype.__class__ = "skins.scenario.ScenarioIntroSkin";
     })(scenario = skins.scenario || (skins.scenario = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=ScenarioIntroSkin.js.map

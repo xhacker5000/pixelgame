@@ -23,5 +23,6 @@ var game_file_list = [
 	"Main.js",
 	"skins/scene/BGSkin.js",
 	"skins/scene/MainMenuSkin.js",
-	"skins/scene/WarningSkin.js"
+	"skins/scene/WarningSkin.js",
+	"util/ConversationManager.js"
 ];

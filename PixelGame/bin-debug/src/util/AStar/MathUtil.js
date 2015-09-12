@@ -68,4 +68,3 @@ var MathUtil = (function () {
     return MathUtil;
 })();
 MathUtil.prototype.__class__ = "MathUtil";
-//# sourceMappingURL=MathUtil.js.map
