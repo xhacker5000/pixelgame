@@ -10,7 +10,7 @@ var ScenarioIntro = (function (_super) {
         _super.call(this, "skins.scenario.ScenarioIntroSkin");
         this.tick = 0;
         this.nextBumpTick = 0;
-        this.terrain = new Terrain(this, "");
+        this.terrain = new Terrain(this, "", 0, 0);
     }
     var __egretProto__ = ScenarioIntro.prototype;
     __egretProto__.init = function () {
@@ -36,10 +36,9 @@ var ScenarioIntro = (function (_super) {
         }
     };
     __egretProto__.nextScene = function () {
-        Main.TRANSTION_TIME = 2000;
+        Main.transit(3000);
         Main.removeScene(this);
-        Main.addScene(Main.LAYER_GAME, new ScenarioRoad());
-        Main.transit();
+        Main.addScene(Main.LAYER_GAME, Main.scenarioRoad);
     };
     __egretProto__.start = function () {
         var _this = this;
@@ -59,7 +58,7 @@ var ScenarioIntro = (function (_super) {
         this.delay(3000);
         //出现对话
         this.addEvent(function () {
-            DialogueScene.getDialogue("intro");
+            DialogueScene.showDialogue("intro");
         }, this);
     };
     __egretProto__.update = function () {

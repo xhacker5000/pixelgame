@@ -11,6 +11,8 @@ class Scenario extends Scene{
     public floatGroup: egret.gui.Group;
     public floaters: Array<any>;
     
+    public cameraLimit: egret.Rectangle = new egret.Rectangle(0,0,0,0);
+    
     public constructor(skinName: string){
         super(skinName);
         this.cameraPosition = new Point(0,0);

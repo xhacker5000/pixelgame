@@ -4,6 +4,15 @@ var Main = (function (_super) {
         _super.call(this);
         Main.main = this;
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        Main.bgScene = new BGScene();
+        Main.dialogueScene = new DialogueScene();
+        Main.warningScene = new WarningScene();
+        Main.mainMenuScene = new MainMenuScene();
+        Main.scenarioIntro = new ScenarioIntro();
+        Main.scenarioRoad = new ScenarioRoad();
+        Main.trunkScene = new TrunkScene();
+        Main.cellphoneScene = new CellphoneScene();
+        Main.uiScene = new UIScene();
     }
     var __egretProto__ = Main.prototype;
     __egretProto__.onAddToStage = function (event) {
@@ -25,6 +34,9 @@ var Main = (function (_super) {
         this.addChild(Main.layers[Main.LAYER_TOP]);
         Main.layers[Main.LAYER_MASK] = new egret.DisplayObjectContainer();
         this.addChild(Main.layers[Main.LAYER_MASK]);
+        Main.main.addEventListener(egret.Event.ENTER_FRAME, function () {
+            Main.tick++;
+        }, this);
         //加载载入界面资源
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onLoadingConfigComplete, this);
         RES.loadConfig("resource/loading.json", "resource/");
@@ -85,6 +97,7 @@ var Main = (function (_super) {
         if (scene.added) {
             return;
         }
+        scene.removed = false;
         scene.added = true;
         if (immediate) {
             Main.layers[layer].addChild(scene);
@@ -99,7 +112,10 @@ var Main = (function (_super) {
             }, this);
         }
     };
-    Main.transit = function () {
+    Main.transit = function (delay) {
+        if (delay) {
+            Main.TRANSTION_TIME = delay;
+        }
         Main.main.curtain.transit();
     };
     /**
@@ -108,6 +124,7 @@ var Main = (function (_super) {
     Main.removeScene = function (scene) {
         if (scene.removed)
             return;
+        scene.added = false;
         scene.removed = true;
         for (var i = 0; i < Main.layers.length; i++) {
             if (Main.layers[i].contains(scene)) {
@@ -130,22 +147,23 @@ var Main = (function (_super) {
             Sound.playBGM("sound_dance");
         }
         //添加背景层
-        Main.addScene(Main.LAYER_BOTTOM, new BGScene(), true);
+        Main.addScene(Main.LAYER_BOTTOM, Main.bgScene, true);
         //添加警告层
-        var warningScene = new WarningScene();
-        Main.addScene(Main.LAYER_GAME, warningScene);
+        Main.addScene(Main.LAYER_GAME, Main.warningScene);
         //测试
-        //Main.addScene(Main.LAYER_GAME, new ScenarioRoad());
+        //Main.addScene(Main.LAYER_GAME, Main.scenarioRoad);
+        //Main.addScene(Main.LAYER_GAME, Main.cellphoneScene);
         Main.transit();
         //添加对话层
-        var dialogueScene = new DialogueScene();
-        Main.addScene(Main.LAYER_GUI, dialogueScene, true);
+        Main.addScene(Main.LAYER_GUI, Main.dialogueScene, true);
     };
     Main.LAYER_BOTTOM = 0;
     Main.LAYER_GAME = 1;
     Main.LAYER_GUI = 2;
     Main.LAYER_TOP = 3;
     Main.LAYER_MASK = 4;
+    Main.tick = 0;
+    Main.free = false;
     Main.TRANSTION_TIME = 2000;
     return Main;
 })(egret.DisplayObjectContainer);

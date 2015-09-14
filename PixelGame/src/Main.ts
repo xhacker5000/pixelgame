@@ -5,6 +5,8 @@ class Main extends egret.DisplayObjectContainer {
     public static LAYER_GUI: number = 2;
     public static LAYER_TOP: number = 3;
     public static LAYER_MASK: number = 4;
+    public static tick: number = 0;
+    public static free: boolean = false;
     
     public static TRANSTION_TIME: number = 2000;
     
@@ -13,10 +15,29 @@ class Main extends egret.DisplayObjectContainer {
     
     private curtain: BGScene;
     
+    public static bgScene: BGScene;
+    public static dialogueScene: DialogueScene;
+    public static warningScene: WarningScene;
+    public static mainMenuScene: MainMenuScene;
+    public static scenarioIntro: ScenarioIntro;
+    public static scenarioRoad: ScenarioRoad;
+    public static trunkScene: TrunkScene;
+    public static cellphoneScene: CellphoneScene;
+    public static uiScene: UIScene;
+    
     public constructor() {
         super();
         Main.main = this;
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        Main.bgScene = new BGScene();
+        Main.dialogueScene = new DialogueScene();
+        Main.warningScene = new WarningScene();
+        Main.mainMenuScene = new MainMenuScene();
+        Main.scenarioIntro = new ScenarioIntro();
+        Main.scenarioRoad = new ScenarioRoad();
+        Main.trunkScene = new TrunkScene();
+        Main.cellphoneScene = new CellphoneScene();
+        Main.uiScene = new UIScene();
     }
     
     private onAddToStage(event:egret.Event) {
@@ -38,6 +59,8 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(Main.layers[Main.LAYER_TOP]);
         Main.layers[Main.LAYER_MASK] = new egret.DisplayObjectContainer();
         this.addChild(Main.layers[Main.LAYER_MASK]);
+        
+        Main.main.addEventListener(egret.Event.ENTER_FRAME, () => { Main.tick++;}, this);
         
         //加载载入界面资源
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onLoadingConfigComplete, this);
@@ -108,7 +131,7 @@ class Main extends egret.DisplayObjectContainer {
         if(scene.added){
             return;
         }
-        
+        scene.removed = false;
         scene.added = true;
         if(immediate) {
             Main.layers[layer].addChild(scene);
@@ -123,7 +146,10 @@ class Main extends egret.DisplayObjectContainer {
         }
     }
     
-    public static transit():void{
+    public static transit(delay?:number):void{
+        if(delay){
+            Main.TRANSTION_TIME = delay;
+        }
         Main.main.curtain.transit();
     }
         
@@ -133,6 +159,7 @@ class Main extends egret.DisplayObjectContainer {
     public static removeScene(scene: Scene): void{
         if(scene.removed)
             return;
+        scene.added = false;
         scene.removed = true;
         
         for(var i: number = 0;i < Main.layers.length; i++){
@@ -158,18 +185,17 @@ class Main extends egret.DisplayObjectContainer {
             Sound.playBGM("sound_dance");
         }
         //添加背景层
-        Main.addScene(Main.LAYER_BOTTOM,new BGScene(),true);
+        Main.addScene(Main.LAYER_BOTTOM,Main.bgScene,true);
         
         //添加警告层
-        var warningScene: WarningScene = new WarningScene();
-        Main.addScene(Main.LAYER_GAME, warningScene);
+        Main.addScene(Main.LAYER_GAME, Main.warningScene);
         //测试
-        //Main.addScene(Main.LAYER_GAME, new ScenarioRoad());
+        //Main.addScene(Main.LAYER_GAME, Main.scenarioRoad);
+        //Main.addScene(Main.LAYER_GAME, Main.cellphoneScene);
         Main.transit();
         
         //添加对话层
-        var dialogueScene: DialogueScene = new DialogueScene();
-        Main.addScene(Main.LAYER_GUI, dialogueScene, true);
+        Main.addScene(Main.LAYER_GUI, Main.dialogueScene, true);
     }
 }
 

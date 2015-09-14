@@ -11,7 +11,7 @@ class ScenarioIntro extends Scenario{
     
 	public constructor() {
         super("skins.scenario.ScenarioIntroSkin");
-        this.terrain = new Terrain(this, "");
+        this.terrain = new Terrain(this, "",0,0);
 	}
 	
 	public init():void{
@@ -40,10 +40,9 @@ class ScenarioIntro extends Scenario{
     }
     
     public nextScene():void{
-        Main.TRANSTION_TIME = 2000;
+        Main.transit(3000);
         Main.removeScene(this);
-        Main.addScene(Main.LAYER_GAME, new ScenarioRoad());
-        Main.transit();
+        Main.addScene(Main.LAYER_GAME, Main.scenarioRoad);
     }
 	
 	public start(): void{
@@ -67,7 +66,7 @@ class ScenarioIntro extends Scenario{
         
         //出现对话
         this.addEvent(() => {
-            DialogueScene.getDialogue("intro");
+            DialogueScene.showDialogue("intro");
         }, this);
 	}
 	

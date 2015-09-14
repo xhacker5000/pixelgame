@@ -7,6 +7,7 @@ var Mob = (function (_super) {
     __extends(Mob, _super);
     function Mob(asset, width, height, scenario) {
         _super.call(this, asset);
+        this.animSpeed = 10;
         this.moveSpeed = 7;
         this.lastDir = 0;
         this.width = width;
@@ -30,17 +31,25 @@ var Mob = (function (_super) {
         return this.pivotY;
     };
     __egretProto__.run = function (direction) {
+        this.action = Mob.ACTION_WALK;
+        this.dir = direction;
         this.lastDir = direction;
+        this.onActionChange();
     };
     __egretProto__.still = function (direction) {
+        this.action = Mob.ACTION_STAND;
+        this.dir = direction;
         this.lastDir = direction;
+        this.onActionChange();
+    };
+    __egretProto__.onActionChange = function () {
     };
     /**
     * Handles the click event on the GridView. Finds the clicked on cell and toggles its walkable state.
     */
     __egretProto__.onGridClick = function (x, y) {
-        var xpos = Math.floor(x / Settings.CELL_SIZE);
-        var ypos = Math.floor(y / Settings.CELL_SIZE);
+        var xpos = Math.floor((x) / Settings.CELL_SIZE);
+        var ypos = Math.floor((y) / Settings.CELL_SIZE);
         var endNp = this.scenario.terrain.grid.getNode(xpos, ypos);
         var xpos2 = Math.floor(this.getX() / Settings.CELL_SIZE);
         var ypos2 = Math.floor(this.getY() / Settings.CELL_SIZE);
@@ -72,26 +81,11 @@ var Mob = (function (_super) {
             astar.floydPath.shift();
             this._path = astar.floydPath;
             this._index = 0;
-            if (this._path[this._index]) {
-                var targetX = this._path[this._index].x * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
-                var targetY = this._path[this._index].y * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
-                if (this.getX() < targetX) {
-                    if (this.getY() < targetY) {
-                        this.run(Mob.DIR_UP_LEFT);
-                    }
-                    else {
-                        this.run(Mob.DIR_DOWN_LEFT);
-                    }
-                }
-                else {
-                    if (this.getY() < targetY) {
-                        this.run(Mob.DIR_UP_RIGHT);
-                    }
-                    else {
-                        this.run(Mob.DIR_DOWN_RIGHT);
-                    }
-                }
-            }
+            //            if(this._path[this._index]) {
+            //                var targetX: number = (this._path[this._index].x - this.scenario.offsetX) * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            //                var targetY: number = (this._path[this._index].y- this.scenario.offsetY) * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            //            }
+            this.calcAnimation();
         }
     };
     __egretProto__.update = function () {
@@ -99,14 +93,14 @@ var Mob = (function (_super) {
     };
     __egretProto__.calcMovement = function () {
         if (this._path && this._path[this._index] && this._path.length != 0) {
-            var targetX = this._path[this._index].x * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
-            var targetY = this._path[this._index].y * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            var targetX = (this._path[this._index].x) * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            var targetY = (this._path[this._index].y) * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
             var dx = targetX - this.getX();
             var dy = targetY - this.getY();
             var dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 1) {
                 this._index++;
-                this.still(this.lastDir);
+                this.calcAnimation();
             }
             else {
                 var x = this.getX() + (dx / dist) * this.moveSpeed;
@@ -137,10 +131,42 @@ var Mob = (function (_super) {
             }
         }
     };
+    __egretProto__.calcAnimation = function () {
+        if (this._path && this._path[this._index]) {
+            var targetX = this._path[this._index].x * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            var targetY = this._path[this._index].y * Settings.CELL_SIZE + Settings.CELL_SIZE / 2;
+            if (this.getX() < targetX) {
+                if (this.getY() <= targetY) {
+                    this.run(Mob.DIR_DOWN_RIGHT);
+                }
+                else {
+                    this.run(Mob.DIR_UP_RIGHT);
+                }
+            }
+            else {
+                if (this.getY() <= targetY) {
+                    this.run(Mob.DIR_DOWN_LEFT);
+                }
+                else {
+                    this.run(Mob.DIR_UP_LEFT);
+                }
+            }
+        }
+        else {
+            this.still(this.lastDir);
+            WheatupEvent.call(EventType.ARRIVE, { x: this.getX(), y: this.getY() });
+        }
+    };
     Mob.DIR_UP_LEFT = 0;
     Mob.DIR_UP_RIGHT = 1;
     Mob.DIR_DOWN_RIGHT = 2;
     Mob.DIR_DOWN_LEFT = 3;
+    Mob.ANIM_STAND_FRONT = 0;
+    Mob.ANIM_STAND_BACK = 1;
+    Mob.ANIM_WALK_FRONT = 2;
+    Mob.ANIM_WALK_BACK = 3;
+    Mob.ACTION_STAND = 0;
+    Mob.ACTION_WALK = 1;
     return Mob;
 })(egret.gui.UIAsset);
 Mob.prototype.__class__ = "Mob";
