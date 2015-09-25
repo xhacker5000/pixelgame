@@ -10,8 +10,12 @@ class Scenario extends Scene{
     public player: Player;
     public floatGroup: egret.gui.Group;
     public floaters: Array<any>;
+    public characterSize: number = 1;
     
     public cameraLimit: egret.Rectangle = new egret.Rectangle(0,0,0,0);
+    private hasPresetPosition: boolean = false;
+    private presetPositionX: number = 0;
+    private presetPositionY: number = 0;
     
     public constructor(skinName: string){
         super(skinName);
@@ -19,10 +23,16 @@ class Scenario extends Scene{
         this.floaters = new Array<any>();
     }
     
-    public createPlayer(x: number, y:number, grp:egret.gui.Group):void{
-        this.player = new Player(this);
+    public createPlayer(x: number, y:number, grp:egret.gui.Group, size: number = 1):void{
+        this.player = new Player(this, size);
         grp.addElement(this.player);
-        this.player.setPosition(x, y);
+        grp.addElement(this.player.cover);
+        if(this.hasPresetPosition) {
+            this.player.setPosition(this.presetPositionX, this.presetPositionY);
+            this.hasPresetPosition = false;
+        }else{
+            this.player.setPosition(x, y);
+        }
     }
     
     //绘制A星Grid(Debug用)
@@ -52,5 +62,15 @@ class Scenario extends Scene{
         if(node == this.terrain.grid.startNode) return 0x999900;
         if(node == this.terrain.grid.endNode) return 0x0000ff;
         return 0xcccccc;
+    }
+    
+    public setPlayerPosition(x: number, y:number):void{
+        if(this.player) {
+            this.player.setPosition(x, y);
+        }else{
+            this.hasPresetPosition = true;
+            this.presetPositionX = x;
+            this.presetPositionY = y;
+        }
     }
 }

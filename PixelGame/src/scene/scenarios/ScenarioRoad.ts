@@ -12,6 +12,8 @@ class ScenarioRoad extends Scenario{
     private grp_touch: egret.gui.Group;
     private grp_particle: egret.gui.Group;
     
+    private img_night: egret.gui.UIAsset;
+    
     private box_scene: egret.gui.UIAsset;
     private box_engine: egret.gui.UIAsset;
     private box_trunk: egret.gui.UIAsset;
@@ -38,13 +40,18 @@ class ScenarioRoad extends Scenario{
         this.grp_game = this.ui["grp_game"];
         this.grp_game.touchChildren = false;
         this.grp_touch = this.ui["grp_touch"];
-        this.bindEvents();
         this.floatGroup = this.ui["grp_playground"];
         this.ui["img_car"].anchorX = 0.5;
         this.ui["img_car"].anchorY = 0.8;
         this.ui["img_car"].x += this.ui["img_car"].width * this.ui["img_car"].anchorX;
         this.ui["img_car"].y += this.ui["img_car"].height * this.ui["img_car"].anchorY;
         this.floaters.push(this.ui["img_car"]);
+        
+        //设置shade
+        this.img_night = this.ui["img_night"];
+        this.img_night.alpha = 0;
+        this.img_night.visible = true;
+        this.ui["grp_shade"].visible = true;
         
         //初始化判定区域
         this.box_scene = this.ui["box_scene"];
@@ -71,9 +78,11 @@ class ScenarioRoad extends Scenario{
         //创建玩家
         this.createPlayer(1250, 350, this.ui["grp_playground"]);
         
-        //创建GUI
-        Main.addScene(Main.LAYER_GUI, Main.uiScene);
         //this.drawGrid();
+	}
+	
+	public setNight(value:number): void{
+        this.img_night.alpha = value;
 	}
 	
 	private clearForFlag():void{
@@ -94,7 +103,7 @@ class ScenarioRoad extends Scenario{
         WheatupEvent.bind(EventType.DIALOGUE_END, this.onDialogueEnd, this);
         WheatupEvent.bind(EventType.ARRIVE, this.onArrive, this);
     }
-        
+    
     private unbindEvents():void{
         this.box_scene.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touchScene, this);
         this.box_engine.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touchEngine, this);
@@ -105,18 +114,46 @@ class ScenarioRoad extends Scenario{
         WheatupEvent.unbind(EventType.DIALOGUE_END, this.onDialogueEnd);
         WheatupEvent.unbind(EventType.ARRIVE, this.onArrive);
     }
+    
+    public onRemove(): void{
+        this.unbindEvents();
+    }
 	
 	public start(): void{
-        this.delay(2000);
-        
-        this.addEvent(() => {
-            DialogueScene.showDialogue("scene1");
-        }, this);
-        
+        this.getConditions();
+        this.bindEvents();
+        if(!Data.getFlag(Flag.HasCarBusted)) {
+            this.delay(2000);
+
+            this.addEvent(() => {
+                DialogueScene.showDialogue("scene1");
+            }, this);
+        }else{
+            Main.free = true;
+        }
+        Data.setFlag(Flag.HasCarBusted);
 	}
 	
+    private getConditions(): void {
+        if(Data.getFlag(Flag.HasArrivedJungle)){
+            this.setNight(0.7);
+            this.ui["bg1"].source = "bg_star";
+            this.ui["bg1_1"].source = "bg_star";
+            if(this.particle) {
+                this.grp_particle.removeElement(<any>this.particle);
+                this.particle = null;
+            }
+        }
+    }
+    
+	
+    private lastY: number;
 	public update():void{
         this.calcCamera();
+        if(this.player.y != this.lastY) {
+            this.player.setBrightness(0.3 + (1 - (436 - this.player.y) / (436 - 240)) * 0.7);
+            this.lastY = this.player.y;
+        }
 	}
 	
 	private calcCamera():void{
@@ -133,26 +170,18 @@ class ScenarioRoad extends Scenario{
         this.ui["grp_bg1"].y = -(Math.round(this.cameraPosition.y * 0.2));
         this.ui["grp_playground"].x = -this.cameraPosition.x;
         this.ui["grp_playground"].y = -this.cameraPosition.y;
-        
-        
-//        this.grp_game.x = -this.cameraPosition.x;
-//        this.grp_game.y = -this.cameraPosition.y;
         this.grp_touch.x = -this.cameraPosition.x;
         this.grp_touch.y = -this.cameraPosition.y;
-        
-        
 	}
 	
     private touchScene(event: egret.TouchEvent):void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free){
+        if(Main.free){
             this.clearForFlag();
             var x = event.localX;
             var y = event.localY;
                         
             if(this.terrain.isInPolygon(x, y)) {
-                this.player.onGridClick(x, y);
+                this.player.onGridClick(x, y, this.ui["grp_bg2"]);
             }
         }
         event.stopPropagation();
@@ -160,55 +189,45 @@ class ScenarioRoad extends Scenario{
     
     private engineTouchCount: number = 0;
     private touchEngine(event: egret.TouchEvent):void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free){
+        if(Main.free){
             this.forEngine = true;
-            this.player.onGridClick(1150, 350);
+            this.player.onGridClick(1150, 350, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     }
     
     private touchTrunk(event: egret.TouchEvent):void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free){
+        if(Main.free){
             this.clearForFlag();
             this.forTrunk = true;
-            this.player.onGridClick(1400, 300);
+            this.player.onGridClick(1400, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     }
     
     public touchEnd1(event: egret.TouchEvent): void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free && !DialogueScene.showing){
+        if(Main.free){
             this.clearForFlag();
             this.forEnd1 = true;
-            this.player.onGridClick(25, 300);
+            this.player.onGridClick(25, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     }
     
     public touchEnd2(event: egret.TouchEvent): void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free){
+        if(Main.free){
             this.clearForFlag();
             this.forEnd2 = true;
-            this.player.onGridClick(1575, 300);
+            this.player.onGridClick(1575, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     }
     
     public touchBush(event: egret.TouchEvent): void{
-        if(DialogueScene.showing) {
-            DialogueScene.interupt();
-        }else if(Main.free){
+        if(Main.free){
             this.clearForFlag();
             this.forBush = true;
-            this.player.onGridClick(470, 230);
+            this.player.onGridClick(470, 230, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     }
@@ -216,6 +235,13 @@ class ScenarioRoad extends Scenario{
     private onDialogueEnd(data: any): void{
         if(data == "scene1"){
             Main.free = true;
+            Timer.addTimer(3000,1,() => {
+                Main.cellphoneScene.addOneMessage(Message.getMessage("wife_ask_1"));
+            },this);
+            
+            Timer.addTimer(6000,1,() => {
+                Main.cellphoneScene.addOneMessage(Message.getMessage("wife_ask_2"));
+            },this);
         }
     }
     
@@ -228,19 +254,17 @@ class ScenarioRoad extends Scenario{
             }
             this.engineTouchCount++;
         }else if(this.forTrunk){
-            Main.transit(1000);
+            Main.transit(500);
             Main.addScene(Main.LAYER_GAME, Main.trunkScene);
         }else if(this.forEnd1){
             DialogueScene.showDialogue("road_end1");
         }else if(this.forEnd2){
             DialogueScene.showDialogue("road_end2");
         }else if(this.forBush){
-            Main.transit(1000);
+            Main.transit(500);
             Main.removeScene(this);
+            Main.addScene(Main.LAYER_GAME, Main.scenarioBush);
+            Main.scenarioBush.setPlayerPosition(30, 448);
         }
-    }
-    
-    public onRemove(): void{
-        this.unbindEvents();
     }
 }

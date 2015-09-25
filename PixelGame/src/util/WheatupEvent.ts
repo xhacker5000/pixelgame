@@ -5,13 +5,13 @@
 *
 */
 class WheatupEvent {
-    
+    public static debugMode: boolean = true;
     public static arr: Array<EventObject>;
     
     /**
     * 绑定事件到指定信号
     */
-    public static bind(triggerName: string, target: Function, thisObject: any, replace: boolean = true): void {
+    public static bind(triggerName: string, target: Function, thisObject: any, replace: boolean = false): void {
         if (!WheatupEvent.arr) {
             WheatupEvent.arr = [];
         }
@@ -77,6 +77,9 @@ class WheatupEvent {
     * 调用事件
     */
     public static call(triggerName: string, data:any = null) : void{
+        if(WheatupEvent.debugMode)
+            Debug.log("事件:" + triggerName + (data ? ":" + data : ""));
+        
         for (var i = 0; i < WheatupEvent.arr.length; i++) {
             if (WheatupEvent.arr[i].triggerName == triggerName) {
                 WheatupEvent.arr[i].target.call(WheatupEvent.arr[i].thisObject,data);

@@ -22,29 +22,65 @@ class Mob extends egret.gui.UIAsset{
     public pivotY: number;
     public moveSpeed: number = 7;
     
+    public cover: egret.gui.UIAsset;
+    public brightness: number = 1;
+    public point: egret.Point;
+    
     private _path: NodePoint[];
     private _index: number;
     private scenario: Scenario;
     private lastDir: number = 0;
     
+    public size: number = 1;
     public dir: number;
     public action: number;
         
-    public constructor(asset: string, width: number, height: number, scenario: Scenario) {
+    public constructor(asset: string,width: number,height: number,scenario: Scenario,size: number = 1) {
         super(asset);
-        this.width = width;
-        this.height = height;
+        this.size = size;
+        this.width = width * this.size;
+        this.height = height * this.size;
         this.anchorX = 0.5;
-        this.anchorY = 1;
+        this.anchorY = 0.9;
         this.scenario = scenario;
         Main.main.addEventListener(egret.Event.ENTER_FRAME,this.update,this);
+        
+        this.cover = new egret.gui.UIAsset();
+        this.cover.width = width * this.size;
+        this.cover.height = height * this.size;
+        this.cover.anchorX = 0.5;
+        this.cover.anchorY = 0.9;
+        this.cover.source = asset + "a";
+        this.point = new egret.Point();
+        
+        this.setBrightness(this.brightness);
+    }
+    
+    public hide():void{
+        this.visible = false;
+        this.cover.visible = false;
+    }
+    
+    public show():void{
+        this.visible = true;
+        this.cover.visible = true;
     }
     	
     public setPosition(x: number, y:number):void{
+        this.point.x = x;
+        this.point.y = y;
         this.pivotX = x;
         this.pivotY = y;
         this.x = x;
         this.y = y;
+        
+        this.cover.x = x;
+        this.cover.y = y;
+    }
+    
+    public setBrightness(brightness: number): void{
+        this.brightness = brightness;
+        this.cover.alpha = 1 - brightness;
     }
     	
     public getX():number{
@@ -76,7 +112,8 @@ class Mob extends egret.gui.UIAsset{
     /**
     * Handles the click event on the GridView. Finds the clicked on cell and toggles its walkable state.
     */
-    public onGridClick(x:number, y:number): void {
+    public onGridClick(x:number, y:number,group:egret.gui.Group): void {
+        Landmark.addLandMark(group,x,y);
         var xpos: number = Math.floor((x) / Settings.CELL_SIZE);
         var ypos: number = Math.floor((y) / Settings.CELL_SIZE);
         var endNp: NodePoint = this.scenario.terrain.grid.getNode(xpos,ypos);
@@ -193,5 +230,10 @@ class Mob extends egret.gui.UIAsset{
             this.still(this.lastDir);
             WheatupEvent.call(EventType.ARRIVE, { x: this.getX(), y: this.getY() });
         }
+    }
+    
+    public isInside(container: any): boolean{
+        return this.pivotX >= container.x && this.pivotX <= container.x + container.width
+            && this.pivotY >= container.y && this.pivotY <= container.y + container.height;
     }
 }

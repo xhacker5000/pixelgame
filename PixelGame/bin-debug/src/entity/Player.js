@@ -5,8 +5,9 @@
  */
 var Player = (function (_super) {
     __extends(Player, _super);
-    function Player(scenario) {
-        _super.call(this, "me_anim_standf_0", 80, 120, scenario);
+    function Player(scenario, size) {
+        if (size === void 0) { size = 1; }
+        _super.call(this, "me_anim_standf_0", 80, 120, scenario, size);
         this.animations = [];
         this.animIndex = 0;
         //添加动画
@@ -20,9 +21,11 @@ var Player = (function (_super) {
     __egretProto__.update = function () {
         _super.prototype.update.call(this);
         this.currentAnimation.update();
+        this.cover.source = this.source + "a";
     };
     __egretProto__.onActionChange = function () {
         this.scaleX = ((this.dir == Mob.DIR_UP_LEFT || this.dir == Mob.DIR_DOWN_LEFT) ? 1 : -1);
+        this.cover.scaleX = this.scaleX;
         var anim;
         switch (this.action) {
             case Mob.ACTION_WALK:

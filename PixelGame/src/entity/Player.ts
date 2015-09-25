@@ -8,8 +8,8 @@ class Player extends Mob{
     private animIndex: number = 0;
     private currentAnimation: Animation;
     
-	public constructor(scenario: Scenario) {
-        super("me_anim_standf_0", 80, 120, scenario);
+    public constructor(scenario: Scenario, size: number = 1) {
+        super("me_anim_standf_0", 80, 120, scenario, size);
         
         //添加动画
         this.animations[Mob.ANIM_STAND_FRONT] = new Animation("me_anim_standf",1,this,0);
@@ -23,10 +23,12 @@ class Player extends Mob{
 	public update():void{
         super.update();
         this.currentAnimation.update();
+        this.cover.source = this.source + "a";
 	}
 	
     public onActionChange():void{
         this.scaleX = ((this.dir == Mob.DIR_UP_LEFT || this.dir == Mob.DIR_DOWN_LEFT) ? 1 : -1);
+        this.cover.scaleX = this.scaleX;
         var anim: Animation;
         switch(this.action){
             case Mob.ACTION_WALK:
@@ -49,6 +51,5 @@ class Player extends Mob{
             this.currentAnimation = anim;
             this.currentAnimation.play();
         }
-        
     }
 }

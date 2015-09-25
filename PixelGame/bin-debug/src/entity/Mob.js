@@ -5,24 +5,52 @@
  */
 var Mob = (function (_super) {
     __extends(Mob, _super);
-    function Mob(asset, width, height, scenario) {
+    function Mob(asset, width, height, scenario, size) {
+        if (size === void 0) { size = 1; }
         _super.call(this, asset);
         this.animSpeed = 10;
         this.moveSpeed = 7;
+        this.brightness = 1;
         this.lastDir = 0;
-        this.width = width;
-        this.height = height;
+        this.size = 1;
+        this.size = size;
+        this.width = width * this.size;
+        this.height = height * this.size;
         this.anchorX = 0.5;
-        this.anchorY = 1;
+        this.anchorY = 0.9;
         this.scenario = scenario;
         Main.main.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+        this.cover = new egret.gui.UIAsset();
+        this.cover.width = width * this.size;
+        this.cover.height = height * this.size;
+        this.cover.anchorX = 0.5;
+        this.cover.anchorY = 0.9;
+        this.cover.source = asset + "a";
+        this.point = new egret.Point();
+        this.setBrightness(this.brightness);
     }
     var __egretProto__ = Mob.prototype;
+    __egretProto__.hide = function () {
+        this.visible = false;
+        this.cover.visible = false;
+    };
+    __egretProto__.show = function () {
+        this.visible = true;
+        this.cover.visible = true;
+    };
     __egretProto__.setPosition = function (x, y) {
+        this.point.x = x;
+        this.point.y = y;
         this.pivotX = x;
         this.pivotY = y;
         this.x = x;
         this.y = y;
+        this.cover.x = x;
+        this.cover.y = y;
+    };
+    __egretProto__.setBrightness = function (brightness) {
+        this.brightness = brightness;
+        this.cover.alpha = 1 - brightness;
     };
     __egretProto__.getX = function () {
         return this.pivotX;
@@ -47,7 +75,8 @@ var Mob = (function (_super) {
     /**
     * Handles the click event on the GridView. Finds the clicked on cell and toggles its walkable state.
     */
-    __egretProto__.onGridClick = function (x, y) {
+    __egretProto__.onGridClick = function (x, y, group) {
+        Landmark.addLandMark(group, x, y);
         var xpos = Math.floor((x) / Settings.CELL_SIZE);
         var ypos = Math.floor((y) / Settings.CELL_SIZE);
         var endNp = this.scenario.terrain.grid.getNode(xpos, ypos);
@@ -156,6 +185,9 @@ var Mob = (function (_super) {
             this.still(this.lastDir);
             WheatupEvent.call(EventType.ARRIVE, { x: this.getX(), y: this.getY() });
         }
+    };
+    __egretProto__.isInside = function (container) {
+        return this.pivotX >= container.x && this.pivotX <= container.x + container.width && this.pivotY >= container.y && this.pivotY <= container.y + container.height;
     };
     Mob.DIR_UP_LEFT = 0;
     Mob.DIR_UP_RIGHT = 1;

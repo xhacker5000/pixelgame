@@ -8,15 +8,27 @@ var Scenario = (function (_super) {
     __extends(Scenario, _super);
     function Scenario(skinName) {
         _super.call(this, skinName);
+        this.characterSize = 1;
         this.cameraLimit = new egret.Rectangle(0, 0, 0, 0);
+        this.hasPresetPosition = false;
+        this.presetPositionX = 0;
+        this.presetPositionY = 0;
         this.cameraPosition = new Point(0, 0);
         this.floaters = new Array();
     }
     var __egretProto__ = Scenario.prototype;
-    __egretProto__.createPlayer = function (x, y, grp) {
-        this.player = new Player(this);
+    __egretProto__.createPlayer = function (x, y, grp, size) {
+        if (size === void 0) { size = 1; }
+        this.player = new Player(this, size);
         grp.addElement(this.player);
-        this.player.setPosition(x, y);
+        grp.addElement(this.player.cover);
+        if (this.hasPresetPosition) {
+            this.player.setPosition(this.presetPositionX, this.presetPositionY);
+            this.hasPresetPosition = false;
+        }
+        else {
+            this.player.setPosition(x, y);
+        }
     };
     //绘制A星Grid(Debug用)
     __egretProto__.drawGrid = function () {
@@ -47,6 +59,16 @@ var Scenario = (function (_super) {
         if (node == this.terrain.grid.endNode)
             return 0x0000ff;
         return 0xcccccc;
+    };
+    __egretProto__.setPlayerPosition = function (x, y) {
+        if (this.player) {
+            this.player.setPosition(x, y);
+        }
+        else {
+            this.hasPresetPosition = true;
+            this.presetPositionX = x;
+            this.presetPositionY = y;
+        }
     };
     return Scenario;
 })(Scene);

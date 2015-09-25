@@ -26,13 +26,17 @@ var ScenarioRoad = (function (_super) {
         this.grp_game = this.ui["grp_game"];
         this.grp_game.touchChildren = false;
         this.grp_touch = this.ui["grp_touch"];
-        this.bindEvents();
         this.floatGroup = this.ui["grp_playground"];
         this.ui["img_car"].anchorX = 0.5;
         this.ui["img_car"].anchorY = 0.8;
         this.ui["img_car"].x += this.ui["img_car"].width * this.ui["img_car"].anchorX;
         this.ui["img_car"].y += this.ui["img_car"].height * this.ui["img_car"].anchorY;
         this.floaters.push(this.ui["img_car"]);
+        //设置shade
+        this.img_night = this.ui["img_night"];
+        this.img_night.alpha = 0;
+        this.img_night.visible = true;
+        this.ui["grp_shade"].visible = true;
         //初始化判定区域
         this.box_scene = this.ui["box_scene"];
         this.box_engine = this.ui["box_engine"];
@@ -55,9 +59,10 @@ var ScenarioRoad = (function (_super) {
         this.particle.start();
         //创建玩家
         this.createPlayer(1250, 350, this.ui["grp_playground"]);
-        //创建GUI
-        Main.addScene(Main.LAYER_GUI, Main.uiScene);
         //this.drawGrid();
+    };
+    __egretProto__.setNight = function (value) {
+        this.img_night.alpha = value;
     };
     __egretProto__.clearForFlag = function () {
         this.forEngine = false;
@@ -86,14 +91,40 @@ var ScenarioRoad = (function (_super) {
         WheatupEvent.unbind(EventType.DIALOGUE_END, this.onDialogueEnd);
         WheatupEvent.unbind(EventType.ARRIVE, this.onArrive);
     };
+    __egretProto__.onRemove = function () {
+        this.unbindEvents();
+    };
     __egretProto__.start = function () {
-        this.delay(2000);
-        this.addEvent(function () {
-            DialogueScene.showDialogue("scene1");
-        }, this);
+        this.getConditions();
+        this.bindEvents();
+        if (!Data.getFlag(0 /* HasCarBusted */)) {
+            this.delay(2000);
+            this.addEvent(function () {
+                DialogueScene.showDialogue("scene1");
+            }, this);
+        }
+        else {
+            Main.free = true;
+        }
+        Data.setFlag(0 /* HasCarBusted */);
+    };
+    __egretProto__.getConditions = function () {
+        if (Data.getFlag(1 /* HasArrivedJungle */)) {
+            this.setNight(0.7);
+            this.ui["bg1"].source = "bg_star";
+            this.ui["bg1_1"].source = "bg_star";
+            if (this.particle) {
+                this.grp_particle.removeElement(this.particle);
+                this.particle = null;
+            }
+        }
     };
     __egretProto__.update = function () {
         this.calcCamera();
+        if (this.player.y != this.lastY) {
+            this.player.setBrightness(0.3 + (1 - (436 - this.player.y) / (436 - 240)) * 0.7);
+            this.lastY = this.player.y;
+        }
     };
     __egretProto__.calcCamera = function () {
         var targetX = Util.clip(this.player.getX() - 400, 0, this.cameraLimit.width);
@@ -108,82 +139,68 @@ var ScenarioRoad = (function (_super) {
         this.ui["grp_bg1"].y = -(Math.round(this.cameraPosition.y * 0.2));
         this.ui["grp_playground"].x = -this.cameraPosition.x;
         this.ui["grp_playground"].y = -this.cameraPosition.y;
-        //        this.grp_game.x = -this.cameraPosition.x;
-        //        this.grp_game.y = -this.cameraPosition.y;
         this.grp_touch.x = -this.cameraPosition.x;
         this.grp_touch.y = -this.cameraPosition.y;
     };
     __egretProto__.touchScene = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free) {
+        if (Main.free) {
             this.clearForFlag();
             var x = event.localX;
             var y = event.localY;
             if (this.terrain.isInPolygon(x, y)) {
-                this.player.onGridClick(x, y);
+                this.player.onGridClick(x, y, this.ui["grp_bg2"]);
             }
         }
         event.stopPropagation();
     };
     __egretProto__.touchEngine = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free) {
+        if (Main.free) {
             this.forEngine = true;
-            this.player.onGridClick(1150, 350);
+            this.player.onGridClick(1150, 350, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     };
     __egretProto__.touchTrunk = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free) {
+        if (Main.free) {
             this.clearForFlag();
             this.forTrunk = true;
-            this.player.onGridClick(1400, 300);
+            this.player.onGridClick(1400, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     };
     __egretProto__.touchEnd1 = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free && !DialogueScene.showing) {
+        if (Main.free) {
             this.clearForFlag();
             this.forEnd1 = true;
-            this.player.onGridClick(25, 300);
+            this.player.onGridClick(25, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     };
     __egretProto__.touchEnd2 = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free) {
+        if (Main.free) {
             this.clearForFlag();
             this.forEnd2 = true;
-            this.player.onGridClick(1575, 300);
+            this.player.onGridClick(1575, 300, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     };
     __egretProto__.touchBush = function (event) {
-        if (DialogueScene.showing) {
-            DialogueScene.interupt();
-        }
-        else if (Main.free) {
+        if (Main.free) {
             this.clearForFlag();
             this.forBush = true;
-            this.player.onGridClick(470, 230);
+            this.player.onGridClick(470, 230, this.ui["grp_bg2"]);
         }
         event.stopPropagation();
     };
     __egretProto__.onDialogueEnd = function (data) {
         if (data == "scene1") {
             Main.free = true;
+            Timer.addTimer(3000, 1, function () {
+                Main.cellphoneScene.addOneMessage(Message.getMessage("wife_ask_1"));
+            }, this);
+            Timer.addTimer(6000, 1, function () {
+                Main.cellphoneScene.addOneMessage(Message.getMessage("wife_ask_2"));
+            }, this);
         }
     };
     __egretProto__.onArrive = function (data) {
@@ -197,7 +214,7 @@ var ScenarioRoad = (function (_super) {
             this.engineTouchCount++;
         }
         else if (this.forTrunk) {
-            Main.transit(1000);
+            Main.transit(500);
             Main.addScene(Main.LAYER_GAME, Main.trunkScene);
         }
         else if (this.forEnd1) {
@@ -207,12 +224,11 @@ var ScenarioRoad = (function (_super) {
             DialogueScene.showDialogue("road_end2");
         }
         else if (this.forBush) {
-            Main.transit(1000);
+            Main.transit(500);
             Main.removeScene(this);
+            Main.addScene(Main.LAYER_GAME, Main.scenarioBush);
+            Main.scenarioBush.setPlayerPosition(30, 448);
         }
-    };
-    __egretProto__.onRemove = function () {
-        this.unbindEvents();
     };
     return ScenarioRoad;
 })(Scenario);

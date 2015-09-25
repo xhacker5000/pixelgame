@@ -1,10 +1,14 @@
 class Main extends egret.DisplayObjectContainer {
+    public static LANG: string = "CH";
+    public static debugMode: boolean = false;
+    
     public static main: Main;
     public static LAYER_BOTTOM: number = 0;
     public static LAYER_GAME: number = 1;
     public static LAYER_GUI: number = 2;
-    public static LAYER_TOP: number = 3;
-    public static LAYER_MASK: number = 4;
+    public static LAYER_DIALOGUE: number = 3;
+    public static LAYER_TOP: number = 4;
+    public static LAYER_MASK: number = 5;
     public static tick: number = 0;
     public static free: boolean = false;
     
@@ -21,9 +25,15 @@ class Main extends egret.DisplayObjectContainer {
     public static mainMenuScene: MainMenuScene;
     public static scenarioIntro: ScenarioIntro;
     public static scenarioRoad: ScenarioRoad;
+    public static scenarioBush: ScenarioBush;
+    public static scenarioJungle: ScenarioJungle;
+    public static scenarioRoom: ScenarioRoom;
+    public static scenarioCabin: ScenarioCabin;
     public static trunkScene: TrunkScene;
     public static cellphoneScene: CellphoneScene;
     public static uiScene: UIScene;
+    public static bookScene: BookScene;
+    
     
     public constructor() {
         super();
@@ -35,9 +45,14 @@ class Main extends egret.DisplayObjectContainer {
         Main.mainMenuScene = new MainMenuScene();
         Main.scenarioIntro = new ScenarioIntro();
         Main.scenarioRoad = new ScenarioRoad();
+        Main.scenarioBush = new ScenarioBush();
+        Main.scenarioJungle = new ScenarioJungle();
+        Main.scenarioRoom = new ScenarioRoom();
+        Main.scenarioCabin = new ScenarioCabin();
         Main.trunkScene = new TrunkScene();
         Main.cellphoneScene = new CellphoneScene();
         Main.uiScene = new UIScene();
+        Main.bookScene = new BookScene();
     }
     
     private onAddToStage(event:egret.Event) {
@@ -45,6 +60,14 @@ class Main extends egret.DisplayObjectContainer {
         new Timer(this);
         //初始化音频播放器
         Sound.init();
+        //初始化对话
+        Dialogue.init();
+        //初始化信息
+        Message.init();
+        //初始化地标
+        Landmark.init();
+        //初始化选择分支
+        Choice.init();
         //初始化素材解析器
         egret.Injector.mapClass("egret.gui.IAssetAdapter", AssetAdapter);
         //初始化所有显示层
@@ -55,6 +78,8 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(Main.layers[Main.LAYER_GAME]);
         Main.layers[Main.LAYER_GUI] = new egret.DisplayObjectContainer();
         this.addChild(Main.layers[Main.LAYER_GUI]);
+        Main.layers[Main.LAYER_DIALOGUE] = new egret.DisplayObjectContainer();
+        this.addChild(Main.layers[Main.LAYER_DIALOGUE]);
         Main.layers[Main.LAYER_TOP] = new egret.DisplayObjectContainer();
         this.addChild(Main.layers[Main.LAYER_TOP]);
         Main.layers[Main.LAYER_MASK] = new egret.DisplayObjectContainer();
@@ -133,15 +158,16 @@ class Main extends egret.DisplayObjectContainer {
         }
         scene.removed = false;
         scene.added = true;
+        scene.visible = false;
+        Main.layers[layer].addChild(scene);
+        Main.main.addEventListener(egret.Event.ENTER_FRAME,scene.update,scene);
         if(immediate) {
-            Main.layers[layer].addChild(scene);
+            scene.visible = true;
             scene.start();
-            Main.main.addEventListener(egret.Event.ENTER_FRAME,scene.update,scene);
         } else {
             Timer.addTimer(Main.TRANSTION_TIME * 0.5,1,() => {
-                Main.layers[layer].addChild(scene);
+                scene.visible = true;
                 scene.start();
-                Main.main.addEventListener(egret.Event.ENTER_FRAME,scene.update,scene);
             },this);
         }
     }
@@ -178,24 +204,26 @@ class Main extends egret.DisplayObjectContainer {
     
     //游戏开始
     private start():void {
-        //初始化对话
-        Dialogue.init();
-        
         if(egret.MainContext.deviceType != egret.MainContext.DEVICE_MOBILE) {
             Sound.playBGM("sound_dance");
         }
         //添加背景层
         Main.addScene(Main.LAYER_BOTTOM,Main.bgScene,true);
         
-        //添加警告层
-        Main.addScene(Main.LAYER_GAME, Main.warningScene);
-        //测试
-        //Main.addScene(Main.LAYER_GAME, Main.scenarioRoad);
-        //Main.addScene(Main.LAYER_GAME, Main.cellphoneScene);
+        //进入游戏
+        if(Main.debugMode) {
+            Main.free = true;
+            Main.addScene(Main.LAYER_GAME,Main.scenarioRoom);
+        } else {
+            Main.addScene(Main.LAYER_GAME,Main.warningScene);
+        }
         Main.transit();
         
+        //创建GUI
+        Main.addScene(Main.LAYER_GUI, Main.uiScene);
+        
         //添加对话层
-        Main.addScene(Main.LAYER_GUI, Main.dialogueScene, true);
+        Main.addScene(Main.LAYER_DIALOGUE, Main.dialogueScene, true);
     }
 }
 
