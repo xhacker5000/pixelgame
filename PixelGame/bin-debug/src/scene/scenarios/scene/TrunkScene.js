@@ -55,4 +55,3 @@ var TrunkScene = (function (_super) {
     return TrunkScene;
 })(Scene);
 TrunkScene.prototype.__class__ = "TrunkScene";
-//# sourceMappingURL=TrunkScene.js.map

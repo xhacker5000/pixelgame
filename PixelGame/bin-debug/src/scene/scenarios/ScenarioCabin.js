@@ -120,4 +120,3 @@ var ScenarioCabin = (function (_super) {
     return ScenarioCabin;
 })(Scenario);
 ScenarioCabin.prototype.__class__ = "ScenarioCabin";
-//# sourceMappingURL=ScenarioCabin.js.map

@@ -165,4 +165,3 @@ var skins;
         CellphoneSkin.prototype.__class__ = "skins.scene.CellphoneSkin";
     })(scene = skins.scene || (skins.scene = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=CellphoneSkin.js.map

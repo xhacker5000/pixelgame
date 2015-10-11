@@ -126,4 +126,3 @@ var skins;
         ScenarioBushSkin.prototype.__class__ = "skins.scenario.ScenarioBushSkin";
     })(scenario = skins.scenario || (skins.scenario = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=ScenarioBushSkin.js.map

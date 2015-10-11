@@ -34,4 +34,3 @@ var Flag;
     Flag[Flag["LastReceiveMessage"] = 4] = "LastReceiveMessage";
     Flag[Flag["HasReplied"] = 5] = "HasReplied"; //是否已回复过短信
 })(Flag || (Flag = {}));
-//# sourceMappingURL=Data.js.map

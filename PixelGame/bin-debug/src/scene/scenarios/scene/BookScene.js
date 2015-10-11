@@ -83,4 +83,3 @@ var BookScene = (function (_super) {
     return BookScene;
 })(Scene);
 BookScene.prototype.__class__ = "BookScene";
-//# sourceMappingURL=BookScene.js.map

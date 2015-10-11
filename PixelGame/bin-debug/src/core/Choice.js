@@ -29,4 +29,3 @@ var Choice = (function () {
     return Choice;
 })();
 Choice.prototype.__class__ = "Choice";
-//# sourceMappingURL=Choice.js.map

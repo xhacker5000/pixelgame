@@ -50,4 +50,3 @@ var Book = (function () {
     return Book;
 })();
 Book.prototype.__class__ = "Book";
-//# sourceMappingURL=Book.js.map

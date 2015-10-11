@@ -224,4 +224,3 @@ var MsgEntry = (function (_super) {
     return MsgEntry;
 })(egret.gui.Group);
 MsgEntry.prototype.__class__ = "MsgEntry";
-//# sourceMappingURL=CellphoneScene.js.map

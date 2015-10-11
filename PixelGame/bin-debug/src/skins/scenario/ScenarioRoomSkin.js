@@ -104,4 +104,3 @@ var skins;
         ScenarioRoomSkin.prototype.__class__ = "skins.scenario.ScenarioRoomSkin";
     })(scenario = skins.scenario || (skins.scenario = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=ScenarioRoomSkin.js.map

@@ -47,4 +47,3 @@ var skins;
         TrunkSkin.prototype.__class__ = "skins.scene.TrunkSkin";
     })(scene = skins.scene || (skins.scene = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=TrunkSkin.js.map

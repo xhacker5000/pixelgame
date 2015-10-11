@@ -40,4 +40,3 @@ var Name = (function () {
     return Name;
 })();
 Name.prototype.__class__ = "Name";
-//# sourceMappingURL=Consts.js.map

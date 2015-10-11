@@ -102,4 +102,3 @@ var EventObject = (function () {
     return EventObject;
 })();
 EventObject.prototype.__class__ = "EventObject";
-//# sourceMappingURL=WheatupEvent.js.map

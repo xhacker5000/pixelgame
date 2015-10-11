@@ -137,4 +137,3 @@ var ScenarioBush = (function (_super) {
     return ScenarioBush;
 })(Scenario);
 ScenarioBush.prototype.__class__ = "ScenarioBush";
-//# sourceMappingURL=ScenarioBush.js.map

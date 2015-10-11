@@ -54,4 +54,3 @@ var Landmark = (function (_super) {
     return Landmark;
 })(egret.gui.UIAsset);
 Landmark.prototype.__class__ = "Landmark";
-//# sourceMappingURL=Landmark.js.map

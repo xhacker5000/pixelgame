@@ -179,4 +179,3 @@ var UIScene = (function (_super) {
     return UIScene;
 })(Scene);
 UIScene.prototype.__class__ = "UIScene";
-//# sourceMappingURL=UIScene.js.map

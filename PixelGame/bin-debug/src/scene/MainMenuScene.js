@@ -15,8 +15,6 @@ var MainMenuScene = (function (_super) {
         this.offsetX = 0;
         this.offsetY = 0;
         MainMenuScene.instance = this;
-        new ConversationManager();
-        ConversationManager.Init();
     }
     var __egretProto__ = MainMenuScene.prototype;
     //初始化

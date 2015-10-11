@@ -145,4 +145,3 @@ var ScenarioJungle = (function (_super) {
     return ScenarioJungle;
 })(Scenario);
 ScenarioJungle.prototype.__class__ = "ScenarioJungle";
-//# sourceMappingURL=ScenarioJungle.js.map

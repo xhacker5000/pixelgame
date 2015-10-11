@@ -197,4 +197,3 @@ var ScenarioRoom = (function (_super) {
     return ScenarioRoom;
 })(Scenario);
 ScenarioRoom.prototype.__class__ = "ScenarioRoom";
-//# sourceMappingURL=ScenarioRoom.js.map

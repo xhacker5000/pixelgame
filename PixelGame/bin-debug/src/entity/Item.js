@@ -34,4 +34,3 @@ var Item = (function () {
     return Item;
 })();
 Item.prototype.__class__ = "Item";
-//# sourceMappingURL=Item.js.map

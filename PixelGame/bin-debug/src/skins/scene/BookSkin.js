@@ -71,4 +71,3 @@ var skins;
         BookSkin.prototype.__class__ = "skins.scene.BookSkin";
     })(scene = skins.scene || (skins.scene = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=BookSkin.js.map

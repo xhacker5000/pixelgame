@@ -79,4 +79,3 @@ var skins;
         UISkin.prototype.__class__ = "skins.scene.UISkin";
     })(scene = skins.scene || (skins.scene = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=UISkin.js.map

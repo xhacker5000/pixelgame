@@ -81,4 +81,3 @@ var Message = (function () {
     return Message;
 })();
 Message.prototype.__class__ = "Message";
-//# sourceMappingURL=Message.js.map

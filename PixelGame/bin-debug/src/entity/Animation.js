@@ -51,4 +51,3 @@ var Animation = (function () {
     return Animation;
 })();
 Animation.prototype.__class__ = "Animation";
-//# sourceMappingURL=Animation.js.map

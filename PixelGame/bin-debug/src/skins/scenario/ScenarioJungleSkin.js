@@ -125,4 +125,3 @@ var skins;
         ScenarioJungleSkin.prototype.__class__ = "skins.scenario.ScenarioJungleSkin";
     })(scenario = skins.scenario || (skins.scenario = {}));
 })(skins || (skins = {}));
-//# sourceMappingURL=ScenarioJungleSkin.js.map
